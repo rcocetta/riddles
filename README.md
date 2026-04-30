@@ -15,7 +15,7 @@ Open `index.html` in your browser.
 
 ## Live app
 
-`https://rcocetta.github.io/riddles/`
+[https://rcocetta.github.io/riddles/](https://rcocetta.github.io/riddles/)
 
 ## Support
 

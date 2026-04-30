@@ -71,9 +71,13 @@
     }
 
     .lang-btn .flag {
-      font-size: 18px;
-      line-height: 1;
-      filter: saturate(0.95);
+      width: 20px;
+      height: 14px;
+      border-radius: 2px;
+      display: inline-block;
+      object-fit: cover;
+      border: 1px solid rgba(10,37,64,0.12);
+      box-shadow: 0 1px 1px rgba(10,37,64,0.08);
     }
 
     .lang-btn:hover:not(.active) {
@@ -296,13 +300,13 @@
 
   <nav class="lang-bar" role="tablist" aria-label="Language">
     <button class="lang-btn" data-lang="en" role="tab" aria-selected="false">
-      <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+      <img class="flag" aria-hidden="true" alt="" src="https://flagcdn.com/w40/gb.png" /><span>EN</span>
     </button>
     <button class="lang-btn" data-lang="fr" role="tab" aria-selected="false">
-      <span class="flag" aria-hidden="true">🇫🇷</span><span>FR</span>
+      <img class="flag" aria-hidden="true" alt="" src="https://flagcdn.com/w40/fr.png" /><span>FR</span>
     </button>
     <button class="lang-btn" data-lang="it" role="tab" aria-selected="false">
-      <span class="flag" aria-hidden="true">🇮🇹</span><span>IT</span>
+      <img class="flag" aria-hidden="true" alt="" src="https://flagcdn.com/w40/it.png" /><span>IT</span>
     </button>
   </nav>
 
