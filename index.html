@@ -109,6 +109,15 @@
       color: var(--ink-muted);
     }
 
+    .tagline {
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+
     /* ─── Main stage ───────────────────────────────────────── */
     .stage {
       flex: 1;
@@ -284,6 +293,7 @@
     @media (max-width: 480px) {
       body { padding: 16px 16px max(16px, env(safe-area-inset-bottom)); }
       .lang-btn { padding: 7px 12px; font-size: 12px; gap: 6px; }
+      .tagline { font-size: 11px; margin-top: 10px; }
       .quote-mark { top: -30px; }
       .stage { flex: 0 1 auto; margin-top: 24px; min-height: min(260px, 34vh); }
       .answer-wrap { min-height: 112px; }
@@ -313,6 +323,8 @@
       <img class="flag" aria-hidden="true" alt="" src="https://flagcdn.com/w40/it.png" /><span>IT</span>
     </button>
   </nav>
+
+  <p class="tagline" id="tagline"></p>
 
   <div class="counter" id="counter" aria-live="polite">— / —</div>
 
@@ -344,13 +356,14 @@
     const showBtn     = document.getElementById('showBtn');
     const nextBtn     = document.getElementById('nextBtn');
     const hintEl      = document.querySelector('.hint');
+    const taglineEl   = document.getElementById('tagline');
     const langButtons = document.querySelectorAll('.lang-btn');
 
     /* Localized UI strings */
     const LABELS = {
-      en: { show: 'Show answer', hide: 'Hide answer', next: 'Next →',     answer: 'Answer',   hint: '<kbd>Space</kbd> reveals answer · <kbd>→</kbd> next' },
-      fr: { show: 'Voir la réponse', hide: 'Cacher la réponse', next: 'Suivant →', answer: 'Réponse',  hint: '<kbd>Espace</kbd> révèle la réponse · <kbd>→</kbd> suivant' },
-      it: { show: 'Mostra risposta', hide: 'Nascondi risposta', next: 'Avanti →', answer: 'Risposta', hint: '<kbd>Spazio</kbd> rivela la risposta · <kbd>→</kbd> avanti' },
+      en: { show: 'Show answer', hide: 'Hide answer', next: 'Next →',     answer: 'Answer',   hint: '<kbd>Space</kbd> reveals answer · <kbd>→</kbd> next', tagline: 'Kid-friendly riddles game' },
+      fr: { show: 'Voir la réponse', hide: 'Cacher la réponse', next: 'Suivant →', answer: 'Réponse',  hint: '<kbd>Espace</kbd> révèle la réponse · <kbd>→</kbd> suivant', tagline: 'Jeu d\'énigmes pour enfants' },
+      it: { show: 'Mostra risposta', hide: 'Nascondi risposta', next: 'Avanti →', answer: 'Risposta', hint: '<kbd>Spazio</kbd> rivela la risposta · <kbd>→</kbd> avanti', tagline: 'Gioco di indovinelli per bambini' },
     };
 
     let answerVisible = false;
@@ -409,6 +422,7 @@
       showBtn.textContent = answerVisible ? L.hide : L.show;
       nextBtn.textContent = L.next;
       hintEl.innerHTML = L.hint;
+      taglineEl.textContent = L.tagline;
     }
 
     function setLang(lang) {
