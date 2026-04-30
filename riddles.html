@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devinettes · Riddles · Indovinelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..700&family=Manrope:wght@400..700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           #E6F0F8;
+      --bg-deep:      #D4E5F2;
+      --bg-card:      #F6FAFD;
+      --ink:          #0A2540;
+      --ink-soft:     #36506E;
+      --ink-muted:    #7990A8;
+      --accent:       #1F4E8C;
+      --accent-deep:  #14365E;
+      --accent-light: #4A78AE;
+      --accent-pale:  #C9DCEE;
+      --border:       #B7CDE2;
+      --radius:       14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 18% 12%, rgba(255,255,255,0.7) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 92%, rgba(74,120,174,0.10) 0%, transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      font-family: 'Manrope', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 60px;
+    }
+
+    /* ─── Language bar ─────────────────────────────────────── */
+    .lang-bar {
+      display: flex;
+      gap: 4px;
+      padding: 5px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      box-shadow: 0 1px 2px rgba(10,37,64,0.04);
+    }
+
+    .lang-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      color: var(--ink-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .lang-btn .flag {
+      font-size: 18px;
+      line-height: 1;
+      filter: saturate(0.95);
+    }
+
+    .lang-btn:hover:not(.active) {
+      background: var(--accent-pale);
+      color: var(--ink);
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .lang-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ─── Counter ──────────────────────────────────────────── */
+    .counter {
+      margin-top: 18px;
+      font-family: 'Fraunces', serif;
+      font-feature-settings: "tnum";
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    /* ─── Main stage ───────────────────────────────────────── */
+    .stage {
+      flex: 1;
+      width: 100%;
+      max-width: 720px;
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      position: relative;
+      padding: 20px 0;
+    }
+
+    .quote-mark {
+      position: absolute;
+      top: -50px;
+      left: 0;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(140px, 22vw, 200px);
+      line-height: 1;
+      color: var(--accent-pale);
+      pointer-events: none;
+      user-select: none;
+      font-weight: 300;
+      font-style: italic;
+      z-index: 0;
+      opacity: 0.8;
+    }
+
+    .prompt {
+      font-family: 'Fraunces', serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-size: clamp(22px, 4.5vw, 34px);
+      line-height: 1.35;
+      text-align: center;
+      color: var(--ink);
+      max-width: 100%;
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: 0 8px;
+    }
+
+    .prompt.changing {
+      animation: fadeIn 0.45s ease;
+    }
+
+    .answer-wrap {
+      margin-top: 28px;
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    .answer {
+      padding: 16px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      text-align: center;
+      animation: slideDown 0.3s ease;
+      box-shadow: 0 2px 6px rgba(10,37,64,0.04);
+    }
+
+    .answer-label {
+      display: block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .answer-text {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(18px, 3.5vw, 22px);
+      color: var(--ink);
+    }
+
+    /* ─── Action buttons ───────────────────────────────────── */
+    .actions {
+      margin-top: 36px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border: none;
+      border-radius: 999px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(31, 78, 140, 0.18);
+    }
+    .btn-primary:hover {
+      background: var(--accent-deep);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(31, 78, 140, 0.28);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--accent-light);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--accent-pale);
+      border-color: var(--accent);
+    }
+    .btn-secondary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* ─── Footer hint ──────────────────────────────────────── */
+    .hint {
+      margin-top: 26px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+    .hint kbd {
+      font-family: 'Manrope', sans-serif;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--ink-soft);
+      margin: 0 2px;
+    }
+
+    /* ─── Animations ───────────────────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Mobile ───────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      body { padding: 20px 16px 40px; }
+      .lang-btn { padding: 7px 12px; font-size: 12px; gap: 6px; }
+      .quote-mark { top: -30px; }
+      .stage { margin-top: 24px; min-height: 260px; }
+      .actions { margin-top: 28px; }
+      .btn { padding: 12px 22px; font-size: 13px; }
+      .hint { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="lang-bar" role="tablist" aria-label="Language">
+    <button class="lang-btn" data-lang="en" role="tab" aria-selected="false">
+      <span class="flag" aria-hidden="true">🇬🇧</span><span>EN</span>
+    </button>
+    <button class="lang-btn" data-lang="fr" role="tab" aria-selected="false">
+      <span class="flag" aria-hidden="true">🇫🇷</span><span>FR</span>
+    </button>
+    <button class="lang-btn" data-lang="it" role="tab" aria-selected="false">
+      <span class="flag" aria-hidden="true">🇮🇹</span><span>IT</span>
+    </button>
+  </nav>
+
+  <div class="counter" id="counter" aria-live="polite">— / —</div>
+
+  <main class="stage">
+    <span class="quote-mark" aria-hidden="true">“</span>
+    <p class="prompt" id="prompt">…</p>
+    <div class="answer-wrap" id="answerWrap">
+      <!-- answer injected here when shown -->
+    </div>
+  </main>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="showBtn" type="button"></button>
+    <button class="btn btn-primary"   id="nextBtn" type="button"></button>
+  </div>
+
+  <p class="hint" aria-hidden="true" id="hint"></p>
+
+  <script>
+    const RIDDLES = {"en":[{"id":1,"prompt":"What has to be broken before you can use it?","answer":"An egg"},{"id":2,"prompt":"I'm tall when I'm young, and I'm short when I'm old. What am I?","answer":"A candle"},{"id":3,"prompt":"What month of the year has 28 days?","answer":"All of them"},{"id":4,"prompt":"What is full of holes but still holds water?","answer":"A sponge"},{"id":5,"prompt":"What question can you never answer yes to?","answer":"Are you asleep yet?"},{"id":6,"prompt":"What is always in front of you but can't be seen?","answer":"The future"},{"id":7,"prompt":"There's a one-story house in which everything is yellow. Yellow walls, yellow doors, yellow furniture. What color are the stairs?","answer":"There aren't any—it's a one-story house"},{"id":8,"prompt":"What can you break, even if you never pick it up or touch it?","answer":"A promise"},{"id":9,"prompt":"What goes up but never comes down?","answer":"Your age"},{"id":10,"prompt":"A man who was outside in the rain without an umbrella or hat didn't get a single hair on his head wet. Why?","answer":"He was bald"},{"id":11,"prompt":"What gets wet while drying?","answer":"A towel"},{"id":12,"prompt":"What can you keep after giving to someone?","answer":"Your word"},{"id":13,"prompt":"I shave every day, but my beard stays the same. What am I?","answer":"A barber"},{"id":14,"prompt":"You see a boat filled with people, yet there isn't a single person on board. How is that possible?","answer":"All the people on the boat are married"},{"id":15,"prompt":"You walk into a room that contains a match, a kerosene lamp, a candle and a fireplace. What would you light first?","answer":"The match"},{"id":16,"prompt":"A man dies of old age on his 25th birthday. How is this possible?","answer":"He was born on February 29"},{"id":17,"prompt":"I have branches, but no fruit, trunk or leaves. What am I?","answer":"A bank"},{"id":18,"prompt":"What can't talk but will reply when spoken to?","answer":"An echo"},{"id":19,"prompt":"The more of this there is, the less you see. What is it?","answer":"Darkness"},{"id":20,"prompt":"David's parents have three sons: Snap, Crackle, and what's the name of the third son?","answer":"David"},{"id":21,"prompt":"I follow you all the time and copy your every move, but you can't touch me or catch me. What am I?","answer":"Your shadow"},{"id":22,"prompt":"What has many keys but can't open a single lock?","answer":"A piano"},{"id":23,"prompt":"What can you hold in your left hand but not in your right?","answer":"Your right elbow"},{"id":24,"prompt":"What is black when it's clean and white when it's dirty?","answer":"A chalkboard"},{"id":25,"prompt":"What gets bigger when more is taken away?","answer":"A hole"},{"id":26,"prompt":"I'm light as a feather, yet the strongest person can't hold me for five minutes. What am I?","answer":"Your breath"},{"id":27,"prompt":"I'm found in socks, scarves and mittens; and often in the paws of playful kittens. What am I?","answer":"Yarn"},{"id":28,"prompt":"Where does today come before yesterday?","answer":"The dictionary"},{"id":29,"prompt":"What invention lets you look right through a wall?","answer":"A window"},{"id":30,"prompt":"If you've got me, you want to share me; if you share me, you haven't kept me. What am I?","answer":"A secret"},{"id":31,"prompt":"What goes up and down but doesn't move?","answer":"A staircase"},{"id":32,"prompt":"If you're running in a race and you pass the person in second place, what place are you in?","answer":"Second place"},{"id":33,"prompt":"It belongs to you, but other people use it more than you do. What is it?","answer":"Your name"},{"id":34,"prompt":"What has lots of eyes, but can't see?","answer":"A potato"},{"id":35,"prompt":"What has one eye, but can't see?","answer":"A needle"},{"id":36,"prompt":"What has many needles, but doesn't sew?","answer":"A Christmas tree"},{"id":37,"prompt":"What has hands, but can't clap?","answer":"A clock"},{"id":38,"prompt":"What has legs, but doesn't walk?","answer":"A table"},{"id":39,"prompt":"What has one head, one foot and four legs?","answer":"A bed"},{"id":40,"prompt":"What can you catch, but not throw?","answer":"A cold"},{"id":41,"prompt":"What kind of band never plays music?","answer":"A rubber band"},{"id":42,"prompt":"What has many teeth, but can't bite?","answer":"A comb"},{"id":43,"prompt":"What is cut on a table, but is never eaten?","answer":"A deck of cards"},{"id":44,"prompt":"What has words, but never speaks?","answer":"A book"},{"id":45,"prompt":"What runs all around a backyard, yet never moves?","answer":"A fence"},{"id":46,"prompt":"What can travel all around the world without leaving its corner?","answer":"A stamp"},{"id":47,"prompt":"What has a thumb and four fingers, but is not a hand?","answer":"A glove"},{"id":48,"prompt":"What has a head and a tail but no body?","answer":"A coin"},{"id":49,"prompt":"What building has the most stories?","answer":"The library"},{"id":50,"prompt":"What tastes better than it smells?","answer":"Your tongue"},{"id":51,"prompt":"What has 13 hearts, but no other organs?","answer":"A deck of cards"},{"id":52,"prompt":"What kind of coat is best put on wet?","answer":"A coat of paint"},{"id":53,"prompt":"What has four wheels and flies?","answer":"A garbage truck"},{"id":54,"prompt":"I am an odd number. Take away a letter and I become even. What number am I?","answer":"Seven"},{"id":55,"prompt":"If two's company, and three's a crowd, what are four and five?","answer":"Nine"},{"id":56,"prompt":"What three numbers, none of which is zero, give the same result whether they're added or multiplied?","answer":"One, two and three"},{"id":57,"prompt":"Mary has four daughters, and each of her daughters has a brother. How many children does Mary have?","answer":"Five—each daughter has the same brother"},{"id":58,"prompt":"Which is heavier: a ton of bricks or a ton of feathers?","answer":"Neither—they both weigh a ton"},{"id":59,"prompt":"Two fathers and two sons are in a car, yet there are only three people in the car. How?","answer":"They are a grandfather, father and son"},{"id":60,"prompt":"The day before yesterday I was 21, and next year I will be 24. When is my birthday?","answer":"December 31; today is January 1"},{"id":61,"prompt":"A little girl goes to the store and buys one dozen eggs. As she is going home, all but three break. How many eggs are left unbroken?","answer":"Three"},{"id":62,"prompt":"What five-letter word becomes shorter when you add two letters to it?","answer":"Short"},{"id":63,"prompt":"What begins with an 'e' and only contains one letter?","answer":"An envelope"},{"id":64,"prompt":"What would you find in the middle of Toronto?","answer":"The letter 'o'"},{"id":65,"prompt":"You see me once in June, twice in November and not at all in May. What am I?","answer":"The letter 'e'"},{"id":66,"prompt":"Two in a corner, one in a room, zero in a house, but one in a shelter. What is it?","answer":"The letter 'r'"},{"id":67,"prompt":"I am the beginning of everything, the end of everywhere. I'm the beginning of eternity, the end of time and space. What am I?","answer":"The letter 'e'"},{"id":68,"prompt":"Forward I am heavy, but backward I am not. What am I?","answer":"The word 'not'"},{"id":69,"prompt":"What is 3/7 chicken, 2/3 cat and 2/4 goat?","answer":"Chicago"},{"id":70,"prompt":"I am a word of letters three; add two and fewer there will be. What word am I?","answer":"Few"},{"id":71,"prompt":"What is the end of everything?","answer":"The letter 'g'"},{"id":72,"prompt":"What word is pronounced the same if you take away four of its five letters?","answer":"Queue"},{"id":73,"prompt":"What is so fragile that saying its name breaks it?","answer":"Silence"},{"id":74,"prompt":"What can run but never walks, has a mouth but never talks, has a head but never weeps, has a bed but never sleeps?","answer":"A river"},{"id":75,"prompt":"What can fill a room but takes up no space?","answer":"Light"},{"id":76,"prompt":"If you drop me I'm sure to crack, but give me a smile and I'll always smile back. What am I?","answer":"A mirror"},{"id":77,"prompt":"The more you take, the more you leave behind. What are they?","answer":"Footsteps"},{"id":78,"prompt":"What goes through cities and fields, but never moves?","answer":"A road"},{"id":79,"prompt":"I am always hungry and will die if not fed, but whatever I touch will soon turn red. What am I?","answer":"Fire"},{"id":80,"prompt":"I have lakes with no water, mountains with no stone and cities with no buildings. What am I?","answer":"A map"},{"id":81,"prompt":"What jumps when it walks and sits when it stands?","answer":"A kangaroo"},{"id":82,"prompt":"I sleep during the day and fly at night, but I have no feathers to aid my flight. What am I?","answer":"A bat"},{"id":83,"prompt":"I can honk without using a horn. What am I?","answer":"A goose"},{"id":84,"prompt":"Why do cats make good warriors?","answer":"Because they've got 9 lives"},{"id":85,"prompt":"The English alphabet goes from A to Z but my name goes from Z to A. What am I?","answer":"A zebra"},{"id":86,"prompt":"I have horns but I can't beep. I like to bleat but I'm not a sheep. What am I?","answer":"A goat"},{"id":87,"prompt":"I am the fastest animal but cannot climb a tree. What am I?","answer":"A cheetah"},{"id":88,"prompt":"I have a thousand needles but I do not sew. What am I?","answer":"A porcupine"},{"id":89,"prompt":"What is in seasons, seconds, centuries and minutes but not in decades, years or days?","answer":"The letter N"},{"id":90,"prompt":"What happens once in a minute, twice in a moment but never in one thousand years?","answer":"The letter M"},{"id":91,"prompt":"Which letter of the alphabet has the most water?","answer":"The letter C"},{"id":92,"prompt":"What can go up a chimney down, but can't go down a chimney up?","answer":"An umbrella"},{"id":93,"prompt":"It has keys, but no locks. It has space, but no room. You can enter, but can't go inside. What is it?","answer":"A keyboard"},{"id":94,"prompt":"What kind of room has no walls or corners?","answer":"A mushroom"},{"id":95,"prompt":"What starts with T, ends with T, and has T inside it?","answer":"A teapot"},{"id":96,"prompt":"I have no wings, but I can fly. And I have no eyes, but I can cry. What am I?","answer":"A cloud"},{"id":97,"prompt":"What can jump higher than a building?","answer":"Anything that can jump—buildings don't jump"},{"id":98,"prompt":"Imagine you are in a room with no windows or doors. How will you get out?","answer":"Stop imagining"},{"id":99,"prompt":"Where would you take a sick boat?","answer":"To the dock"},{"id":100,"prompt":"I'm orange, I wear a green hat and I sound like a parrot. What am I?","answer":"A carrot"}],"fr":[{"id":1,"prompt":"J'ai quatre pattes et un dos, mais je ne peux pas marcher. Qui suis-je ?","answer":"Une chaise"},{"id":2,"prompt":"Je suis ronde, je deviens toute rouge au soleil, ma peau est parfaitement lisse et j'adore me glisser dans les salades en été. Qui suis-je ?","answer":"La tomate"},{"id":3,"prompt":"Je porte des lunettes, mais je ne vois pas. Qui suis-je ?","answer":"Le nez"},{"id":4,"prompt":"J'ai des dents, mais je ne mords pas. Je n'ai pas de bouche. Je n'ai pas de tête, pourtant j'ai souvent des cheveux. Qui suis-je ?","answer":"Un peigne"},{"id":5,"prompt":"Le père de Tim a trois enfants : Kendra, Léo et… ?","answer":"Tim"},{"id":6,"prompt":"J'ai 5 doigts, mais je ne suis pas vivant. Qui suis-je ?","answer":"Un gant"},{"id":7,"prompt":"Je n'ai qu'un pied et je ne porte pas de chaussure. J'ai un chapeau, mais pas de tête. Qui suis-je ?","answer":"Un champignon"},{"id":8,"prompt":"Je suis toujours avec toi et je copie tes mouvements. Mais tu ne peux jamais m'attraper ni me toucher. Qui suis-je ?","answer":"Ton ombre"},{"id":9,"prompt":"Quel mois de l'année a 28 jours ?","answer":"Tous les mois"},{"id":10,"prompt":"On me trouve dans le ciel, dans la mer et sur les sapins de Noël. Qui suis-je ?","answer":"Une étoile"},{"id":11,"prompt":"Quelle est la lettre la plus tranchante ?","answer":"Le H (hache)"},{"id":12,"prompt":"Quelles sont les lettres de l'alphabet les plus fragiles ?","answer":"Les E (œufs)"},{"id":13,"prompt":"Qu'est-ce qui court et qui est jaune ?","answer":"Un citron pressé"},{"id":14,"prompt":"Que dit un citron quand il arrête un autre citron ?","answer":"Plus un zeste !"},{"id":15,"prompt":"Quelle est la monnaie des poissons ?","answer":"Le sous-marin"},{"id":16,"prompt":"Quel fruit est le plus silencieux ?","answer":"Une mûre mure"},{"id":17,"prompt":"Qui a des yeux mais ne voit rien ?","answer":"Une pomme de terre"},{"id":18,"prompt":"Qui pleure quand on lui tourne la tête ?","answer":"Le robinet"},{"id":19,"prompt":"Monsieur et Madame Fréchi ont une fille, comment s'appelle-t-elle ?","answer":"Sarah (ça rafraîchit)"},{"id":20,"prompt":"Quel est le nombre préféré des vampires ?","answer":"Le 109 (sang-neuf)"},{"id":21,"prompt":"Quels sont les 2 plats préférés des vampires ?","answer":"Le croque-monsieur et le croque-madame"},{"id":22,"prompt":"Quel est le comble pour un vampire ?","answer":"D'avoir le sang chaud"},{"id":23,"prompt":"J'ai deux aiguilles, pourtant je ne pique pas et je ne sais pas tricoter. Qui suis-je ?","answer":"Une horloge"},{"id":24,"prompt":"Quand on en a besoin, on le jette. Qui est-ce ?","answer":"Un sort"},{"id":25,"prompt":"Je suis entre 130 et 132, mais je ne suis pas 131. Qui suis-je ?","answer":"Et"},{"id":26,"prompt":"Elle permet de regarder à travers un mur, sans aucun sortilège. Qui est-ce ?","answer":"La fenêtre"},{"id":27,"prompt":"Je remplis une pièce sans prendre de place. On peut me voir mais pas m'attraper. Qui suis-je ?","answer":"La lumière"},{"id":28,"prompt":"Si tu me jettes au feu, je ne brûle pas et si tu me jettes à l'eau, je ne coule pas. Qui suis-je ?","answer":"De la glace"},{"id":29,"prompt":"Tu me vois dans l'eau, pourtant je ne suis jamais mouillé. Qui suis-je ?","answer":"Ton reflet"},{"id":30,"prompt":"Qu'on m'enlève une lettre, deux lettres ou trois lettres, je suis toujours le même. Qui suis-je ?","answer":"Le facteur"},{"id":31,"prompt":"Je suis entouré de poils, je m'ouvre et je me ferme. Qui suis-je ?","answer":"Un œil"},{"id":32,"prompt":"J'ai deux branches, mais pas de feuilles. Qui suis-je ?","answer":"Des lunettes"},{"id":33,"prompt":"Je grossis, mais je ne prends jamais de poids. Qui suis-je ?","answer":"Une loupe"},{"id":34,"prompt":"Je termine le matin et je commence la nuit. Qui suis-je ?","answer":"La lettre N"},{"id":35,"prompt":"À quel endroit, trouve-t-on devant après le derrière ?","answer":"Le dictionnaire"},{"id":36,"prompt":"Qui a 4 pattes quand il est petit, 2 quand il grandit et 3 quand il est vieux ?","answer":"L'homme"},{"id":37,"prompt":"Qu'est-ce qui est frais quand il est chaud ?","answer":"Le pain"},{"id":38,"prompt":"Que peut-on tenir sans jamais pouvoir la toucher ?","answer":"La parole"},{"id":39,"prompt":"Je retiens l'eau et pourtant je suis pleine de trous. Qui suis-je ?","answer":"Une éponge"},{"id":40,"prompt":"Un coureur voit la ligne d'arrivée, dans un dernier élan, il parvient à doubler le deuxième. Quelle sera sa place sur le podium ?","answer":"Deuxième"},{"id":41,"prompt":"Au début de ma vie, je suis grande, puis je rétrécis avant de m'éteindre. Qui suis-je ?","answer":"Une bougie"},{"id":42,"prompt":"Je peux voyager dans le monde entier, mais toujours en restant dans mon coin. Qui suis-je ?","answer":"Un timbre"},{"id":43,"prompt":"Je réponds quand on me parle, pourtant je ne peux pas parler. Qui suis-je ?","answer":"L'écho"},{"id":44,"prompt":"J'ai des cornes, mais si tu me rajoutes un L, je deviens un cheval. Qui suis-je ?","answer":"Une vache"},{"id":45,"prompt":"Quelle est la chose qui court mais ne peut pas marcher ?","answer":"Un bruit"},{"id":46,"prompt":"Qu'est-ce qui monte et qui descend sans bouger ?","answer":"Le soleil"},{"id":47,"prompt":"Qu'est-ce qui disparaît dès qu'on en parle ?","answer":"Le silence"},{"id":48,"prompt":"Qu'est-ce qui a des clés mais n'ouvre aucune porte ?","answer":"Une portée de musique"},{"id":49,"prompt":"Le soir de Noël, même s'il fait très froid, je reste éteinte. Qui suis-je ?","answer":"La cheminée"},{"id":50,"prompt":"Quand je suis dans la forêt, je suis tout vert. On me met dans la maison en décembre, et je deviens de toutes les couleurs. Qui suis-je ?","answer":"Le sapin"},{"id":51,"prompt":"Comment s'appelle le grand panier que le Père Noël porte sur son dos ?","answer":"Une hotte"},{"id":52,"prompt":"De quelle couleur est le manteau du Père Noël ?","answer":"Rouge"},{"id":53,"prompt":"On me trouve dans le tas de bois et sur la table de Noël, qui suis-je ?","answer":"La bûche"},{"id":54,"prompt":"Je suis tout petit, j'ai des moustaches et j'adore le fromage. Qui suis-je ?","answer":"La souris"},{"id":55,"prompt":"Je suis très grand, j'ai un long cou et je mange les feuilles des arbres. Qui suis-je ?","answer":"La girafe"},{"id":56,"prompt":"Je vis dans la mer, je nage très vite et j'ai un grand aileron sur le dos. Qui suis-je ?","answer":"Le requin"},{"id":57,"prompt":"J'ai quatre pattes, j'aboie et je suis le meilleur ami de l'homme. Qui suis-je ?","answer":"Le chien"},{"id":58,"prompt":"Je suis orange, j'ai des rayures noires et je rugis très fort. Qui suis-je ?","answer":"Le tigre"},{"id":59,"prompt":"On me remplit d'eau, on me pose sur le feu, et je siffle quand l'eau est chaude. Qui suis-je ?","answer":"La bouilloire"},{"id":60,"prompt":"Je suis dans la salle de bain, on me frotte sur les mains et je fais de la mousse. Qui suis-je ?","answer":"Le savon"},{"id":61,"prompt":"On me met sur la tête quand il pleut pour ne pas se mouiller. Qui suis-je ?","answer":"Le parapluie"},{"id":62,"prompt":"On me met aux pieds avant de sortir marcher. Qui suis-je ?","answer":"Les chaussures"},{"id":63,"prompt":"Je soigne les gens malades à l'hôpital. Qui suis-je ?","answer":"Le médecin"},{"id":64,"prompt":"J'éteins les incendies avec mon grand camion rouge. Qui suis-je ?","answer":"Le pompier"},{"id":65,"prompt":"Je prépare de bons gâteaux et du pain dans ma boutique. Qui suis-je ?","answer":"Le boulanger"},{"id":66,"prompt":"J'apprends à lire et à écrire aux enfants. Qui suis-je ?","answer":"La maîtresse"},{"id":67,"prompt":"Je construis des maisons avec des briques et du ciment. Qui suis-je ?","answer":"Le maçon"},{"id":68,"prompt":"Plus j'ai de nourriture, plus je suis affamé. Plus j'ai d'eau, plus j'ai soif. Qui suis-je ?","answer":"Le feu"},{"id":69,"prompt":"Je cours tout autour du jardin sans jamais bouger. Qui suis-je ?","answer":"Une clôture"},{"id":70,"prompt":"Je peux voler sans ailes. Je peux pleurer sans yeux. Qui suis-je ?","answer":"Un nuage"},{"id":71,"prompt":"Je grandis du bas vers le haut. Qui suis-je ?","answer":"Un arbre"},{"id":72,"prompt":"J'ai un cœur qui ne bat pas. Qui suis-je ?","answer":"Un artichaut"},{"id":73,"prompt":"Qu'est-ce qui a 13 cœurs mais pas d'organes ?","answer":"Un jeu de cartes"},{"id":74,"prompt":"Qu'est-ce qui est jaune et qui attend ?","answer":"Jonathan"},{"id":75,"prompt":"Quel animal a six pattes et marche sur la tête ?","answer":"Un pou"},{"id":76,"prompt":"Pourquoi les livres ont-ils toujours chaud ?","answer":"Parce qu'ils ont une couverture"},{"id":77,"prompt":"Un berger a 20 moutons. Tous meurent sauf 7. Combien en reste-t-il ?","answer":"7"},{"id":78,"prompt":"Combien de pattes ont 1 coq, 2 chiens et 3 poules ensemble ?","answer":"14 pattes"},{"id":79,"prompt":"Je suis un nombre. Je suis plus grand que 5 et plus petit que 10. Si tu m'additionnes à moi-même, tu obtiens 14. Qui suis-je ?","answer":"7"},{"id":80,"prompt":"Qu'est-ce qui peut courir mais jamais marcher, qui a une bouche mais ne parle jamais ?","answer":"Une rivière"},{"id":81,"prompt":"Plus on en prend, plus on en laisse. Qu'est-ce que c'est ?","answer":"Des empreintes de pas"},{"id":82,"prompt":"Je transforme la plante en planète. Qui suis-je ?","answer":"Le « è »"},{"id":83,"prompt":"Huit perdrix sont sur une branche. Le chasseur tire et rate son coup. Combien reste-t-il d'oiseaux ?","answer":"Aucun, elles se sont envolées"},{"id":84,"prompt":"Il y a 10 lampadaires dans la rue. Deux s'éteignent. Combien reste-t-il de lampadaires ?","answer":"Toujours 10"},{"id":85,"prompt":"Jean met 5 minutes pour aller à l'arrêt de bus. Combien de temps met-il avec un ami ?","answer":"Toujours 5 minutes"},{"id":86,"prompt":"Qu'est-ce qui monte et descend sans bouger ?","answer":"Les escaliers"},{"id":87,"prompt":"Je suis un chiffre magique que tu retrouves dans les contes. Qui suis-je ?","answer":"Le chiffre 7"},{"id":88,"prompt":"Je sors après la pluie et j'ai plein de couleurs. Qui suis-je ?","answer":"L'arc-en-ciel"},{"id":89,"prompt":"Je tombe du ciel en hiver et je suis tout blanc. Qui suis-je ?","answer":"La neige"},{"id":90,"prompt":"Je réchauffe tout le monde, mais on ne peut pas me toucher. Qui suis-je ?","answer":"Le soleil"},{"id":91,"prompt":"Je vole dans la nuit et j'adore les grottes. Qui suis-je ?","answer":"Une chauve-souris"},{"id":92,"prompt":"On me sculpte et on me met devant la maison à Halloween. Qui suis-je ?","answer":"Une citrouille"},{"id":93,"prompt":"J'ai une baguette magique et un chapeau pointu. Qui suis-je ?","answer":"Une sorcière"},{"id":94,"prompt":"J'ai des toiles et huit pattes. Qui suis-je ?","answer":"Une araignée"},{"id":95,"prompt":"Quand je suis sale je suis blanc et quand je suis propre je suis noir. Qui suis-je ?","answer":"Le tableau d'école"},{"id":96,"prompt":"Je possède un chapeau mais je n'ai point de tête. J'ai un pied mais ne possède point de soulier. Qui suis-je ?","answer":"Un champignon"},{"id":97,"prompt":"Je suis une lettre qui contient une lettre. Qui suis-je ?","answer":"Une enveloppe"},{"id":98,"prompt":"Plus j'ai de gardiens, moins je suis gardé. Qui suis-je ?","answer":"Un secret"},{"id":99,"prompt":"Quelle est la différence entre un chewing-gum et un avion ?","answer":"Le chewing-gum colle et l'avion décolle"},{"id":100,"prompt":"Je suis jaune, douce et je pousse sur un bananier. Qui suis-je ?","answer":"La banane"}],"it":[{"id":1,"prompt":"Si gratta le orecchie con il naso. Chi è?","answer":"L'elefante"},{"id":2,"prompt":"Passa attraverso i vetri della finestra, ma non li rompe. Chi è?","answer":"Il sole"},{"id":3,"prompt":"Ha le ali ma non ha le piume, vola ma non cinguetta. Che cos'è?","answer":"L'aereo"},{"id":4,"prompt":"Il padre di Maria ha 5 figlie: Zazzana, Zezzena, Zizzina e Zuzzuna. Come si chiama la quinta figlia?","answer":"Zozzona"},{"id":5,"prompt":"Passa tutto il tempo nei campi coltivati, ma non lavora e non si muove. Chi è?","answer":"Lo spaventapasseri"},{"id":6,"prompt":"Ho 2 ruote ed in tutta fretta sfreccio come una saetta, io sono la…","answer":"Bicicletta"},{"id":7,"prompt":"Non son crudo non son cotto, mi mangi con il latte, io sono un…","answer":"Biscotto"},{"id":8,"prompt":"Siamo nei prati e di tanti colori, belli e profumati, noi siamo i…","answer":"Fiori"},{"id":9,"prompt":"Siamo piccoli e verdini, siamo tondi e fratellini, stiamo dentro ai baccelli e ci chiamiamo…","answer":"Piselli"},{"id":10,"prompt":"Tutti i chiodi di me han paura anche se son molto bello, io sono il…","answer":"Martello"},{"id":11,"prompt":"Siam vivaci e con tante sfumature, siamo usati da bambini e da pittori noi siamo…","answer":"I colori"},{"id":12,"prompt":"Siamo i frutti dell'ulivo, tra le foglie siamo schive, noi siamo le…","answer":"Olive"},{"id":13,"prompt":"Mi trovo alla stazione per portare le persone. Con me puoi viaggiare in un baleno, io sono il…","answer":"Treno"},{"id":14,"prompt":"Mi trovi vicino al coltello, quando hai fame mi afferri in tutta fretta, io sono la…","answer":"Forchetta"},{"id":15,"prompt":"Ho la chioma profumata, son da tutti onorata, ma stai attento alle mie spine, pungono servi e regine, son un dono per la sposa io sono la…","answer":"Rosa"},{"id":16,"prompt":"Arrivano di notte senza essere chiamate, spariscono di giorno senza essere rubate, sono splendenti e molto belle, sono le…","answer":"Stelle"},{"id":17,"prompt":"Sono un insetto e ho le ali di tanti colori, volo sui fiori per succhiare il nettare, faccio rima con palla e mi chiamo…","answer":"Farfalla"},{"id":18,"prompt":"Molto strano è questo fatto: grande appena come un piatto, col suo viso tondo tondo, illumina il mondo. Chi è?","answer":"Il sole"},{"id":19,"prompt":"Con gli occhi aperti non lo puoi trovare, se li chiudi può arrivare. Cos'è?","answer":"Il sonno"},{"id":20,"prompt":"Son rotonda e paffutella, sono rossa e sempre bella, sono molle e son succosa, tengo dentro dura cosa. Chi sono?","answer":"La ciliegia"},{"id":21,"prompt":"Vengo cotto in più di un modo, se son duro sono sodo, tu mi mangi solo rotto sia crudo che cotto. A star dritto non ci provo, io sono…","answer":"Un uovo"},{"id":22,"prompt":"Sono alto, lungo e snello, mi usi quando piove. Sono…","answer":"L'ombrello"},{"id":23,"prompt":"Bella, fresca e chiara chiara, sempre corre e lava lava. Pensaci su. Io lo so, ma dillo tu","answer":"L'acqua"},{"id":24,"prompt":"Non è acqua di mare, né di fonte, non sta in cielo, né in terra ma soltanto sulla fronte. Cos'è?","answer":"Il sudore"},{"id":25,"prompt":"Nella savana vive e si aggira, è la più alta gira e rigira, ha il collo lungo come nessun altro per questo mangia le foglie che stanno più in alto. Chi è?","answer":"La giraffa"},{"id":26,"prompt":"Ha uno o due corni sopra la testa, se si mette a correre nessuno lo arresta, non ha pelo ma pelle grigia. Chi è?","answer":"Il rinoceronte"},{"id":27,"prompt":"Indovina indovinello, mezzo topo e mezzo uccello. Chi sono?","answer":"Il pipistrello"},{"id":28,"prompt":"Sono piccola, ma snella, vado a cavallo senza sella, passo il mare senza nave, entro in casa senza chiave, siedo a tavola anche coi re. Chi sono?","answer":"La zanzara"},{"id":29,"prompt":"È grande e molto grosso, sulla terra ferma risulta un po' goffo, in acqua continuamente sbadiglia. Chi è?","answer":"L'ippopotamo"},{"id":30,"prompt":"Ho baffi e fiuto fino e sento odor di topolino, giro sempre in 44, ma lo sai che sono il…","answer":"Gatto"},{"id":31,"prompt":"Vivo nella foresta e nel circo, ho due orecchie grandi e un naso lungo, sono molto pesante e mi chiamo…","answer":"Elefante"},{"id":32,"prompt":"Sto sui fiori in mezzo al prato, con un vestito rosso e di nero puntinato, son rotonda e tanto bella mi chiamano…","answer":"Coccinella"},{"id":33,"prompt":"Faccio tele e non mi lagno, mi presento sono il…","answer":"Ragno"},{"id":34,"prompt":"Faccio muuu, faccio rima con zucca e mi chiamo…","answer":"Mucca"},{"id":35,"prompt":"Ha una corona rosso rubino, ma mangia chicchi e qualche semino. Ha un paio d'ali ma non sa volare. Chi è?","answer":"La gallina"},{"id":36,"prompt":"Siamo brave e piccoline, formiamo file senza fine; gironzoliamo d'estate intorno, lavorando tutto il giorno per riempire i magazzini di preziosi granellini. Chi siamo?","answer":"Le formiche"},{"id":37,"prompt":"Non è un re ma ha una corona, non è una sveglia ma la mattina ti sveglia. Chi è?","answer":"Il gallo"},{"id":38,"prompt":"Vado sempre senza fretta, chiusa nella mia casetta. Anche se lascio la scia sono la più lenta che ci sia. Chi sono?","answer":"La chiocciola"},{"id":39,"prompt":"Anche quando è piena, non trabocca mai. Cos'è?","answer":"La luna"},{"id":40,"prompt":"Una stella che non splende. Cos'è?","answer":"Stella marina"},{"id":41,"prompt":"Ha quattro gambe, ma non può camminare. Cos'è?","answer":"Il tavolo"},{"id":42,"prompt":"Si tuffa ma non si bagna. Chi è?","answer":"Il portiere"},{"id":43,"prompt":"Più è nera, più è pulita. Cos'è?","answer":"La lavagna"},{"id":44,"prompt":"Più lo usi, più diventa piccolo. Cos'è?","answer":"Il sapone"},{"id":45,"prompt":"Se è buona, tutti la scartano. Cos'è?","answer":"La caramella"},{"id":46,"prompt":"Tutti sanno aprirlo ma nessuno sa richiuderlo. Cos'è?","answer":"L'uovo"},{"id":47,"prompt":"Se balla cade sempre. Cos'è?","answer":"Il dente"},{"id":48,"prompt":"Sparisce quando pronunci il suo nome. Cos'è?","answer":"Il silenzio"},{"id":49,"prompt":"Ha un buco sulla testa e fa dei buchi. Cos'è?","answer":"L'ago"},{"id":50,"prompt":"Ha buchi dappertutto eppure contiene l'acqua. Cos'è?","answer":"La spugna"},{"id":51,"prompt":"Se ce l'hai vuoi dirlo, se lo dici non ce l'hai più. Cos'è?","answer":"Il segreto"},{"id":52,"prompt":"Ascolta sempre ma non parla mai. Cos'è?","answer":"L'orecchio"},{"id":53,"prompt":"Qual è l'animale che restò fuori dall'arca di Noè ma si salvò?","answer":"Il pesce"},{"id":54,"prompt":"Ha i denti, ma non morde. Cos'è?","answer":"Il pettine"},{"id":55,"prompt":"Ha il collo ma non la testa. Cos'è?","answer":"La bottiglia"},{"id":56,"prompt":"Quando è fresco è caldo. Cos'è?","answer":"Il pane"},{"id":57,"prompt":"Svolazza tutto il giorno ma non va mai da nessuna parte. Cos'è?","answer":"La bandiera"},{"id":58,"prompt":"Non ho la lingua ma parlo sempre. Cos'è?","answer":"L'eco"},{"id":59,"prompt":"Sono piccolo e di legno e se mi strofinano mi accendo. Cosa sono?","answer":"Il fiammifero"},{"id":60,"prompt":"Cosa cade in inverno, ma non si fa mai male?","answer":"La neve"},{"id":61,"prompt":"Sono di pezza, di gomma, di spugna, di plastica, sono bianca, rossa, azzurra, rotolo salto e rimbalzo, piaccio tanto ai bambini e ai calciatori. Cosa sono?","answer":"La palla"},{"id":62,"prompt":"Contiene dello zucchero, ma non è dolce. Cos'è?","answer":"La zuccheriera"},{"id":63,"prompt":"Sono sempre fermo e non mi muovo mai, ma se inizio a fumare faccio tanti guai. Cosa sono?","answer":"Il vulcano"},{"id":64,"prompt":"Non ho ali e non ho piedi, ma appena nasco scappo via. Chi sono?","answer":"Il fumo"},{"id":65,"prompt":"Cerco la terra e mi tuffo in mare ma poi vado a fondo perché non so nuotare. Cosa sono?","answer":"L'ancora"},{"id":66,"prompt":"Posso essere bionda o bruna e mi conoscono tutti perché se mi spremi, con me non devi esagerare. Cosa sono?","answer":"L'uva"},{"id":67,"prompt":"Tolgo il freddo, con te poi cucino, ma è meglio se non mi stai troppo vicino. Cosa sono?","answer":"Il fuoco"},{"id":68,"prompt":"Siamo quattro sorelle in un anno: una fiorita, una assolata, una rossastra, una innevata. Quando una viene l'altra se ne va. Chi siamo?","answer":"Le stagioni"},{"id":69,"prompt":"Sono umida e parente della pioggia, se mi sei lontano, mi vedi meglio. Cosa sono?","answer":"La nebbia"},{"id":70,"prompt":"Resto a casa nei giorni belli ed esco solo nei giorni di pioggia. Cos'è?","answer":"L'ombrello"},{"id":71,"prompt":"Due finestrelle di giorno aperte e di notte chiuse. Cosa sono?","answer":"Gli occhi"},{"id":72,"prompt":"Sono colorato e porto fortuna, mi faccio vedere con il sole ma dopo la pioggia. Cosa sono?","answer":"L'arcobaleno"},{"id":73,"prompt":"Sto sui tetti ma non sono un uccello, sono bianca ma non sono farina. Chi sono?","answer":"La neve"},{"id":74,"prompt":"Al mattino tutti mi abbandonano ma di notte tutti stanno con me. Cos'è?","answer":"Il letto"},{"id":75,"prompt":"Lascio il mio segno solo dove è scuro e qualche volta strido se non mi spezzi. Cosa sono?","answer":"Il gesso"},{"id":76,"prompt":"Sono nera, corta o lunga ti seguo ovunque e se mi calpesti non mi fai male. Chi sono?","answer":"L'ombra"},{"id":77,"prompt":"Resto impalato sul bordo della strada e mi guarda tanta gente, così cambio colore continuamente. Cosa sono?","answer":"Il semaforo"},{"id":78,"prompt":"Abbiamo mani e dita ma siamo senza carne e senza ossa. Cosa siamo?","answer":"I guanti"},{"id":79,"prompt":"Uffa! Non mi prude niente ma tutti mi grattano. Cosa sono?","answer":"Il formaggio"},{"id":80,"prompt":"Si pianta sempre ma non cresce mai. Cos'è?","answer":"Il chiodo"},{"id":81,"prompt":"È tuo ma lo usano sempre gli altri. Cos'è?","answer":"Il tuo nome"},{"id":82,"prompt":"Quando fa freddo si spoglia. Chi è?","answer":"L'albero"},{"id":83,"prompt":"Se cala aumenta. Cos'è?","answer":"La nebbia"},{"id":84,"prompt":"Sta sempre nel suo letto ma non dorme mai. Cos'è?","answer":"Il fiume"},{"id":85,"prompt":"Si mette in tavola, si taglia ma non si può mangiare. Cos'è?","answer":"Un mazzo di carte"},{"id":86,"prompt":"Ha una coda che non potrà mai muovere. Cos'è?","answer":"Il pianoforte"},{"id":87,"prompt":"Sono leggero come una piuma, ma nessuno riesce a tenermi per più di pochi minuti. Chi sono?","answer":"Il respiro"},{"id":88,"prompt":"Mi trovi se vai in un posto desolato, e se parli me ne sono già andato. Chi sono?","answer":"Il silenzio"},{"id":89,"prompt":"Cosa puoi tenere nella tua mano destra ma non nella tua mano sinistra?","answer":"La tua mano sinistra"},{"id":90,"prompt":"Nella fossa delle acque bollenti, entran bastoni ed escon serpenti. Cosa sono?","answer":"Gli spaghetti"},{"id":91,"prompt":"In due o in quattro o in otto lungo le strade andiamo: sempre ci rincorriamo e mai ci raggiungiamo. Chi siamo?","answer":"Le ruote"},{"id":92,"prompt":"Se c'è non si vede, se si vede non c'è. Cos'è?","answer":"Il buio"},{"id":93,"prompt":"Nasce grande e muore piccola. Cos'è?","answer":"La candela"},{"id":94,"prompt":"Se le unisci dividono. Cosa sono?","answer":"Le forbici"},{"id":95,"prompt":"Entra solo se le giri la testa. Cos'è?","answer":"La vite"},{"id":96,"prompt":"Funziona solo se si apre. Cos'è?","answer":"Il paracadute"},{"id":97,"prompt":"Quando sono in piedi loro sono sdraiati, quando sono sdraiato loro sono in piedi. Chi sono?","answer":"I piedi"},{"id":98,"prompt":"Non chiede niente, ma tutti gli rispondono. Cos'è?","answer":"Il campanello"},{"id":99,"prompt":"Siamo cinque e piccole e ci trovi tutte nelle aiuole. Chi siamo?","answer":"Le vocali"},{"id":100,"prompt":"Passa attraverso il vetro, ma senza romperlo. Cos'è?","answer":"La luce"}]};
+
+    let currentLang = 'en';
+    const shownIds = { en: new Set(), fr: new Set(), it: new Set() };
+    let currentRiddle = null;
+
+    const promptEl    = document.getElementById('prompt');
+    const answerWrap  = document.getElementById('answerWrap');
+    const counterEl   = document.getElementById('counter');
+    const showBtn     = document.getElementById('showBtn');
+    const nextBtn     = document.getElementById('nextBtn');
+    const hintEl      = document.querySelector('.hint');
+    const langButtons = document.querySelectorAll('.lang-btn');
+
+    /* Localized UI strings */
+    const LABELS = {
+      en: { show: 'Show answer', hide: 'Hide answer', next: 'Next →',     answer: 'Answer',   hint: '<kbd>Space</kbd> reveals answer · <kbd>→</kbd> next' },
+      fr: { show: 'Voir la réponse', hide: 'Cacher la réponse', next: 'Suivant →', answer: 'Réponse',  hint: '<kbd>Espace</kbd> révèle la réponse · <kbd>→</kbd> suivant' },
+      it: { show: 'Mostra risposta', hide: 'Nascondi risposta', next: 'Avanti →', answer: 'Risposta', hint: '<kbd>Spazio</kbd> rivela la risposta · <kbd>→</kbd> avanti' },
+    };
+
+    let answerVisible = false;
+
+    function pickNext() {
+      const all  = RIDDLES[currentLang];
+      const seen = shownIds[currentLang];
+      if (seen.size >= all.length) seen.clear();          // cycle reset
+      const remaining = all.filter(r => !seen.has(r.id));
+      const next = remaining[Math.floor(Math.random() * remaining.length)];
+      seen.add(next.id);
+      currentRiddle = next;
+      render();
+    }
+
+    function render() {
+      // Restart fade animation on prompt
+      promptEl.classList.remove('changing');
+      void promptEl.offsetWidth;                          // reflow
+      promptEl.classList.add('changing');
+      promptEl.textContent = currentRiddle.prompt;
+
+      // New riddle → answer always hidden
+      setAnswerVisible(false);
+
+      // Counter
+      counterEl.textContent = `${shownIds[currentLang].size} / ${RIDDLES[currentLang].length}`;
+    }
+
+    function setAnswerVisible(visible) {
+      answerVisible = visible;
+      if (visible && currentRiddle) {
+        answerWrap.innerHTML = '';
+        const div = document.createElement('div');
+        div.className = 'answer';
+        div.innerHTML = `
+          <span class="answer-label"></span>
+          <span class="answer-text"></span>
+        `;
+        div.querySelector('.answer-label').textContent = LABELS[currentLang].answer;
+        div.querySelector('.answer-text').textContent  = currentRiddle.answer;
+        answerWrap.appendChild(div);
+      } else {
+        answerWrap.innerHTML = '';
+      }
+      applyLabels();
+    }
+
+    function toggleAnswer() {
+      if (!currentRiddle) return;
+      setAnswerVisible(!answerVisible);
+    }
+
+    function applyLabels() {
+      const L = LABELS[currentLang];
+      showBtn.textContent = answerVisible ? L.hide : L.show;
+      nextBtn.textContent = L.next;
+      hintEl.innerHTML = L.hint;
+    }
+
+    function setLang(lang) {
+      if (lang === currentLang && currentRiddle) return;
+      currentLang = lang;
+      langButtons.forEach(b => {
+        const active = b.dataset.lang === lang;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      pickNext();
+    }
+
+    /* Events */
+    langButtons.forEach(btn =>
+      btn.addEventListener('click', () => setLang(btn.dataset.lang))
+    );
+    showBtn.addEventListener('click', toggleAnswer);
+    nextBtn.addEventListener('click', pickNext);
+
+    /* Keyboard */
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' || e.key === 'n' || e.key === 'N') {
+        pickNext();
+        e.preventDefault();
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        toggleAnswer();
+        e.preventDefault();
+      }
+    });
+
+    /* Init */
+    setLang('en');
+  </script>
+</body>
+</html>
