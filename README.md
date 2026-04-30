@@ -8,6 +8,7 @@ Simple single-page app with kids-friendly riddles in 3 languages:
 
 The app is fully static and lives in `index.html`.
 I hope you can enjoy it with your kids.
+It was built with Claude Code and Cursor.
 
 ## Run locally
 
